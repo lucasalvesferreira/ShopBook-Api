@@ -1,54 +1,47 @@
 package com.shopbook.shopbook.service
 
-import com.shopbook.shopbook.controller.request.PostCustumerRequest
-import com.shopbook.shopbook.controller.request.PutCustumerRequest
 import com.shopbook.shopbook.model.CustomerModel
+import com.shopbook.shopbook.repository.CustomerRepository
 import org.springframework.stereotype.Service
 
 
 @Service
-class CustomerService {
-
-    val customers = mutableListOf<CustomerModel>()
+class CustomerService(
+    val customerRepository: CustomerRepository
+) {
 
     fun getAll(name: String?): List<CustomerModel> {
         name?.let {
-            return customers.filter {
-                it.nome.contains(name, true)
-            }
+            return customerRepository.findByNameContainingIgnoreCase(it)
         }
-        return customers
+        return customerRepository.findAll().toList()
     }
 
-    fun create(customer: PostCustumerRequest) {
+    fun create(customer: CustomerModel) {
 
-        val id = if (customers.isEmpty()) {
-            1
-        } else {
-            customers.last().id.toInt() + 1
-        }.toString()
-
-        customers.add(CustomerModel(id, customer.nome, customer.email))
+        customerRepository.save(customer)
     }
 
-    fun getCustomer(id: String): CustomerModel {
-        return customers.filter { it.id == id }.first()
+    fun getById(id: Int): CustomerModel {
+        return customerRepository.findById(id).orElseThrow()
 
     }
 
-    fun update(id: String, customer: PutCustumerRequest) {
-        customers.filter { it.id == id }.first().let {
-            it.nome = customer.nome
-            it.email = customer.email
-
+    fun update(customer: CustomerModel) {
+        if (customerRepository.existsById(customer.id!!)) {
+            throw Exception()
         }
 
+        customerRepository.save(customer)
+
     }
 
-    fun delete(id: String) {
-        customers.removeIf {
-            it.id == id
+    fun delete(id: Int) {
+        if (customerRepository.existsById(id)) {
+            throw Exception()
         }
+
+        customerRepository.deleteById(id)
 
     }
 

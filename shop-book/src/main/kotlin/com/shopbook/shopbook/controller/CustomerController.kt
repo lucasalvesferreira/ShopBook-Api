@@ -2,6 +2,7 @@ package com.shopbook.shopbook.controller
 
 import com.shopbook.shopbook.controller.request.PostCustumerRequest
 import com.shopbook.shopbook.controller.request.PutCustumerRequest
+import com.shopbook.shopbook.extension.toCustomerModel
 import com.shopbook.shopbook.model.CustomerModel
 import com.shopbook.shopbook.service.CustomerService
 import org.springframework.http.HttpStatus
@@ -16,7 +17,7 @@ class CustomerController(val customerService: CustomerService) {
     @ResponseStatus(HttpStatus.CREATED)
     fun create(@RequestBody customer: PostCustumerRequest) {
 
-        customerService.create(customer)
+        customerService.create(customer.toCustomerModel())
     }
 
     @GetMapping
@@ -25,20 +26,20 @@ class CustomerController(val customerService: CustomerService) {
     }
 
     @GetMapping("/{id}")
-    fun getCustomer(@PathVariable id: String): CustomerModel {
-        return customerService.getCustomer(id)
+    fun getCustomer(@PathVariable id: Int): CustomerModel {
+        return customerService.getById(id)
 
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun update(@PathVariable id: String, @RequestBody customer: PutCustumerRequest) {
-        customerService.update(id, customer)
+    fun update(@PathVariable id: Int, @RequestBody customer: PutCustumerRequest) {
+        customerService.update(customer.toCustomerModel(id))
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable id: String) {
+    fun delete(@PathVariable id: Int) {
         customerService.delete(id)
     }
 
