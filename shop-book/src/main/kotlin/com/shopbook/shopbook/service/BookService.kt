@@ -2,6 +2,7 @@ package com.shopbook.shopbook.service
 
 import com.shopbook.shopbook.enums.BookStatus
 import com.shopbook.shopbook.model.BookModel
+import com.shopbook.shopbook.model.CustomerModel
 import com.shopbook.shopbook.repository.BookRepository
 import org.springframework.stereotype.Service
 
@@ -37,6 +38,14 @@ class BookService(
         bookRepository.save(book)
     }
 
+
+    fun deleteByCustomer(customer: CustomerModel) {
+        val books = bookRepository.findByCustomer(customer)
+        for(book in books) {
+            book.status = BookStatus.DELETADO
+        }
+        bookRepository.saveAll(books)
+    }
 
 }
 

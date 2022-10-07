@@ -5,14 +5,15 @@ import com.shopbook.shopbook.controller.request.PostCustumerRequest
 import com.shopbook.shopbook.controller.request.PutBookRequest
 import com.shopbook.shopbook.controller.request.PutCustumerRequest
 import com.shopbook.shopbook.enums.BookStatus
+import com.shopbook.shopbook.enums.CustumerStatus
 import com.shopbook.shopbook.model.BookModel
 import com.shopbook.shopbook.model.CustomerModel
 
 fun PostCustumerRequest.toCustomerModel(): CustomerModel {
-    return CustomerModel( name= this.nome,email= this.email)
+    return CustomerModel( name= this.nome,email= this.email, status = CustumerStatus.ATIVO)
 }
-fun PutCustumerRequest.toCustomerModel(id: Int): CustomerModel {
-    return CustomerModel( id= id, name= this.nome,email= this.email)
+fun PutCustumerRequest.toCustomerModel(previusValues: CustomerModel): CustomerModel {
+    return CustomerModel( id= previusValues.id, name= this.nome,email= this.email, status = previusValues.status)
 }
 fun PostBookRequest.toBookModel(customer : CustomerModel): BookModel {
     return BookModel(

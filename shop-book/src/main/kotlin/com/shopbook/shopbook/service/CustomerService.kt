@@ -1,5 +1,6 @@
 package com.shopbook.shopbook.service
 
+import com.shopbook.shopbook.enums.CustumerStatus
 import com.shopbook.shopbook.model.CustomerModel
 import com.shopbook.shopbook.repository.CustomerRepository
 import org.springframework.stereotype.Service
@@ -7,7 +8,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class CustomerService(
-    val customerRepository: CustomerRepository
+    val customerRepository: CustomerRepository,
+    val bookService: BookService
 ) {
 
     fun getAll(name: String?): List<CustomerModel> {
@@ -22,7 +24,7 @@ class CustomerService(
         customerRepository.save(customer)
     }
 
-    fun getById(id: Int): CustomerModel {
+    fun findById(id: Int): CustomerModel {
         return customerRepository.findById(id).orElseThrow()
 
     }
@@ -37,11 +39,12 @@ class CustomerService(
     }
 
     fun delete(id: Int) {
-        if (customerRepository.existsById(id)) {
-            throw Exception()
-        }
+        val customer = findById(id)
+        bookService.deleteByCustomer(customer)
 
-        customerRepository.deleteById(id)
+        customer.status = CustumerStatus.INATIVO
+
+        customerRepository.save(customer)
 
     }
 

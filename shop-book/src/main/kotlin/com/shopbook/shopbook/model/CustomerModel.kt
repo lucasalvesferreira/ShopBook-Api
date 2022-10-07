@@ -1,10 +1,7 @@
 package com.shopbook.shopbook.model
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import com.shopbook.shopbook.enums.CustumerStatus
+import javax.persistence.*
 
 @Entity(name = "customer")
 data class CustomerModel(
@@ -17,6 +14,10 @@ data class CustomerModel(
     var name: String,
 
     @Column
-    var email: String
+    var email: String,
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    var status : CustumerStatus
 
 )
